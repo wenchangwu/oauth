@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:sec="http://www.springframework.org/schema/security"
+	xmlns:oauth="http://www.springframework.org/schema/security/oauth2" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
+		http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2-1.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.1.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+		http://www.springframework.org/schema/jdbc  
+		http://www.springframework.org/schema/jdbc/spring-jdbc-3.0.xsd">
+
+    <!-- 获取Accesson Token -->
+	<http pattern="/oauth/token" create-session="stateless" authentication-manager-ref="clientAuthenticationManager"
+		xmlns="http://www.springframework.org/schema/security">
+		<intercept-url pattern="/oauth/token" access="IS_AUTHENTICATED_FULLY" />
+		<anonymous enabled="false" />
+		<http-basic entry-point-ref="clientAuthenticationEntryPoint" />
+		<!-- include this only if you need to authenticate clients via request parameters -->
+		<custom-filter ref="clientCredentialsTokenEndpointFilter" before="BASIC_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+	
+	<!-- The OAuth2 protected resources are separated out into their own block so we can deal with authorization and error handling 
+		separately. This isn't mandatory, but it makes it easier to control the behaviour. -->
+	<http pattern="/photos/**" create-session="never" entry-point-ref="oauthAuthenticationEntryPoint"
+		access-decision-manager-ref="accessDecisionManager" xmlns="http://www.springframework.org/schema/security">
+		<anonymous enabled="false" />
+		<intercept-url pattern="/photos" access="ROLE_USER,SCOPE_READ" />
+		<intercept-url pattern="/photos/trusted/**" access="ROLE_CLIENT,SCOPE_TRUST" />
+		<intercept-url pattern="/photos/user/**" access="ROLE_USER,SCOPE_TRUST" />
+		<intercept-url pattern="/photos/**" access="ROLE_USER,SCOPE_READ" />
+		<custom-filter ref="resourceServerFilter" before="PRE_AUTH_FILTER" />
+		<access-denied-handler ref="oauthAccessDeniedHandler" />
+	</http>
+    
+	<!-- OAuth2 Server端 用户登录验证 -->
+	<http access-denied-page="/login.jsp?authorization_error=true" disable-url-rewriting="true"
+		xmlns="http://www.springframework.org/schema/security">
+		<intercept-url pattern="/oauth/**" access="ROLE_USER" />
+		<intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+
+		<form-login authentication-failure-url="/login.jsp?authentication_error=true" default-target-url="/index.jsp"
+			login-page="/login.jsp" login-processing-url="/login.do" />
+		<logout logout-success-url="/index.jsp" logout-url="/logout.do" />
+		<anonymous />
+	</http>
+
+	<!-- 最终用户(End-User)认证管理 -->
+	<bean id="passwordEncoder" class="com.iqiyi.oauth2.server.oauth.MyPasswordEncoder" />
+	<bean id="saltSource" class="com.iqiyi.oauth2.server.oauth.MySaltSource" />
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="myUserDetailsService">
+			<sec:password-encoder ref="passwordEncoder">
+				<sec:salt-source ref="saltSource"/>
+			</sec:password-encoder>
+		</sec:authentication-provider>	
+	</sec:authentication-manager>
+	
+	<!-- 服务点的验证与授权方式 -->
+	<oauth:authorization-server client-details-service-ref="clientDetails" token-services-ref="tokenServices"
+		user-approval-handler-ref="userApprovalHandler">
+		<!-- 适用于所有有Server端配合的应用和无Server端应用 -->
+		<oauth:authorization-code />
+		
+		<!-- 适用于所有无Server端配合的应用（桌面客户端需要内嵌浏览器） -->
+		<oauth:implicit />
+		
+		<!-- 令牌刷新方式，适用于所有有Server端配合的应用 -->
+		<oauth:refresh-token />
+		
+		<!-- 采用应用公钥、密钥获取Access Token，适用于任何类型应用 -->
+		<oauth:client-credentials disabled="true" />
+		
+		<!-- 适用于无法使用浏览器发起服务端和客户端验流程的应用 -->
+		<oauth:password disabled="true" />
+	</oauth:authorization-server>
+	
+	<!-- Tokens管理 -->
+	<bean id="tokenServices" class="org.springframework.security.oauth2.provider.token.DefaultTokenServices">
+		<property name="tokenStore" ref="tokenStore" />
+		<property name="supportRefreshToken" value="true" />
+		<property name="clientDetailsService" ref="clientDetails" />
+	</bean>
+	
+	<!-- 采用基于内存的方式存储 
+	<bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.InMemoryTokenStore" />
+	-->
+	<!-- 采用数据库方式的方式存储token -->
+	<bean id="tokenStore" class="org.springframework.security.oauth2.provider.token.JdbcTokenStore">
+		<constructor-arg ref="dataSource" />
+	</bean>
+	
+	<!-- 配置服务端受保护的资源 -->
+	<!-- 
+		Resource Server Configuration 过滤受保护的资源
+		初始化时候（@link CompositeFilter）组成一个过滤链来处理access_token的有效性
+		（@link CompositeFilter）过滤器包含Oauth一组过滤链（@link OAuth2ExceptionHandlerFilter OAuth2ProtectedResourceFilter）
+	 -->
+	<oauth:resource-server id="resourceServerFilter" resource-id="sparklr" token-services-ref="tokenServices" />
+	
+	<!-- 
+		预先注册的客户端（consumer）相关配置信息
+	-->
+	<bean id="clientDetails" class="com.iqiyi.oauth2.server.oauth.MyClientDetailsServiceImpl"/>
+	
+	<!-- 客户端有效性验证 -->
+	<bean id="userApprovalHandler" class="com.iqiyi.oauth2.server.oauth.MyUserApprovalHandler">
+		<property name="autoApproveClients">
+			<set>
+				<value>my-less-trusted-autoapprove-client</value>
+			</set>
+		</property>
+		<property name="tokenServices" ref="tokenServices" />
+	</bean>
+	
+	<!-- 认证管理器管理 - 验证客户端（consumer）的合法性 -->
+	<bean id="clientDetailsUserService" class="org.springframework.security.oauth2.provider.client.ClientDetailsUserDetailsService">
+		<constructor-arg ref="clientDetails" />
+	</bean>
+	<!-- 
+		客户端(client)认证。当客户请求获取access token时验证客户端省份。
+		此处配置认证方式，具体调用在过滤器（@link ClientCredentialsTokenEndPointFilter）中处理 
+	-->
+	<authentication-manager id="clientAuthenticationManager" xmlns="http://www.springframework.org/schema/security">
+		<authentication-provider user-service-ref="clientDetailsUserService" />
+	</authentication-manager>
+	
+	<bean id="oauthAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
+		<property name="realmName" value="sparklr2" />
+	</bean>
+	
+	<bean id="clientAuthenticationEntryPoint" class="org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint">
+		<property name="realmName" value="sparklr2/client" />
+		<property name="typeName" value="Basic" />
+	</bean>
+	
+	<bean id="clientCredentialsTokenEndpointFilter" class="org.springframework.security.oauth2.provider.client.ClientCredentialsTokenEndpointFilter">
+		<property name="authenticationManager" ref="clientAuthenticationManager" />
+	</bean>
+	
+	<bean id="oauthAccessDeniedHandler" class="org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler" />
+	
+	<bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased" xmlns="http://www.springframework.org/schema/beans">
+		<constructor-arg>
+			<list>
+				<bean class="org.springframework.security.oauth2.provider.vote.ScopeVoter" />
+				<bean class="org.springframework.security.access.vote.RoleVoter" />
+				<bean class="org.springframework.security.access.vote.AuthenticatedVoter" />
+			</list>
+		</constructor-arg>
+	</bean>
+	
+</beans>

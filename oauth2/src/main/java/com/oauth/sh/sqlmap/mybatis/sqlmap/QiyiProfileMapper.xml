@@ -1,0 +1,589 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.oauth.sh.sqlmap.mybatis.mapper.QiyiProfileMapper" >
+  <resultMap id="BaseResultMap" type="com.oauth.sh.sqlmap.mybatis.model.QiyiProfile" >
+    <id column="suid" property="suid" jdbcType="INTEGER" />
+    <result column="puid" property="puid" jdbcType="INTEGER" />
+    <result column="uname" property="uname" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="acode" property="acode" jdbcType="VARCHAR" />
+    <result column="activated" property="activated" jdbcType="TINYINT" />
+    <result column="passwd" property="passwd" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="gender" property="gender" jdbcType="TINYINT" />
+    <result column="birthday" property="birthday" jdbcType="INTEGER" />
+    <result column="province" property="province" jdbcType="TINYINT" />
+    <result column="city" property="city" jdbcType="TINYINT" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="work" property="work" jdbcType="TINYINT" />
+    <result column="income" property="income" jdbcType="TINYINT" />
+    <result column="regip" property="regip" jdbcType="VARCHAR" />
+    <result column="jointime" property="jointime" jdbcType="INTEGER" />
+    <result column="extinfo" property="extinfo" jdbcType="VARCHAR" />
+    <result column="question" property="question" jdbcType="VARCHAR" />
+    <result column="answer" property="answer" jdbcType="VARCHAR" />
+    <result column="source" property="source" jdbcType="TINYINT" />
+    <result column="fromurl" property="fromurl" jdbcType="VARCHAR" />
+    <result column="email_or_mobile" property="emailOrMobile" jdbcType="BIT" />
+    <result column="edu" property="edu" jdbcType="TINYINT" />
+    <result column="industry" property="industry" jdbcType="TINYINT" />
+    <result column="self_intro" property="selfIntro" jdbcType="VARCHAR" />
+    <result column="real_name" property="realName" jdbcType="VARCHAR" />
+    <result column="personal_url" property="personalUrl" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    suid, puid, uname, email, acode, activated, passwd, phone, gender, birthday, province, 
+    city, status, icon, work, income, regip, jointime, extinfo, question, answer, source, 
+    fromurl, email_or_mobile, edu, industry, self_intro, real_name, personal_url
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.oauth.sh.sqlmap.mybatis.model.QiyiProfileExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from qiyi_profile
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from qiyi_profile
+    where suid = #{suid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from qiyi_profile
+    where suid = #{suid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.oauth.sh.sqlmap.mybatis.model.QiyiProfileExample" >
+    delete from qiyi_profile
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.oauth.sh.sqlmap.mybatis.model.QiyiProfile" >
+    insert into qiyi_profile (suid, puid, uname, 
+      email, acode, activated, 
+      passwd, phone, gender, 
+      birthday, province, city, 
+      status, icon, work, 
+      income, regip, jointime, 
+      extinfo, question, answer, 
+      source, fromurl, email_or_mobile, 
+      edu, industry, self_intro, 
+      real_name, personal_url)
+    values (#{suid,jdbcType=INTEGER}, #{puid,jdbcType=INTEGER}, #{uname,jdbcType=VARCHAR}, 
+      #{email,jdbcType=VARCHAR}, #{acode,jdbcType=VARCHAR}, #{activated,jdbcType=TINYINT}, 
+      #{passwd,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, #{gender,jdbcType=TINYINT}, 
+      #{birthday,jdbcType=INTEGER}, #{province,jdbcType=TINYINT}, #{city,jdbcType=TINYINT}, 
+      #{status,jdbcType=TINYINT}, #{icon,jdbcType=VARCHAR}, #{work,jdbcType=TINYINT}, 
+      #{income,jdbcType=TINYINT}, #{regip,jdbcType=VARCHAR}, #{jointime,jdbcType=INTEGER}, 
+      #{extinfo,jdbcType=VARCHAR}, #{question,jdbcType=VARCHAR}, #{answer,jdbcType=VARCHAR}, 
+      #{source,jdbcType=TINYINT}, #{fromurl,jdbcType=VARCHAR}, #{emailOrMobile,jdbcType=BIT}, 
+      #{edu,jdbcType=TINYINT}, #{industry,jdbcType=TINYINT}, #{selfIntro,jdbcType=VARCHAR}, 
+      #{realName,jdbcType=VARCHAR}, #{personalUrl,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.oauth.sh.sqlmap.mybatis.model.QiyiProfile" >
+    insert into qiyi_profile
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="suid != null" >
+        suid,
+      </if>
+      <if test="puid != null" >
+        puid,
+      </if>
+      <if test="uname != null" >
+        uname,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="acode != null" >
+        acode,
+      </if>
+      <if test="activated != null" >
+        activated,
+      </if>
+      <if test="passwd != null" >
+        passwd,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="gender != null" >
+        gender,
+      </if>
+      <if test="birthday != null" >
+        birthday,
+      </if>
+      <if test="province != null" >
+        province,
+      </if>
+      <if test="city != null" >
+        city,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="work != null" >
+        work,
+      </if>
+      <if test="income != null" >
+        income,
+      </if>
+      <if test="regip != null" >
+        regip,
+      </if>
+      <if test="jointime != null" >
+        jointime,
+      </if>
+      <if test="extinfo != null" >
+        extinfo,
+      </if>
+      <if test="question != null" >
+        question,
+      </if>
+      <if test="answer != null" >
+        answer,
+      </if>
+      <if test="source != null" >
+        source,
+      </if>
+      <if test="fromurl != null" >
+        fromurl,
+      </if>
+      <if test="emailOrMobile != null" >
+        email_or_mobile,
+      </if>
+      <if test="edu != null" >
+        edu,
+      </if>
+      <if test="industry != null" >
+        industry,
+      </if>
+      <if test="selfIntro != null" >
+        self_intro,
+      </if>
+      <if test="realName != null" >
+        real_name,
+      </if>
+      <if test="personalUrl != null" >
+        personal_url,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="suid != null" >
+        #{suid,jdbcType=INTEGER},
+      </if>
+      <if test="puid != null" >
+        #{puid,jdbcType=INTEGER},
+      </if>
+      <if test="uname != null" >
+        #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="acode != null" >
+        #{acode,jdbcType=VARCHAR},
+      </if>
+      <if test="activated != null" >
+        #{activated,jdbcType=TINYINT},
+      </if>
+      <if test="passwd != null" >
+        #{passwd,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        #{gender,jdbcType=TINYINT},
+      </if>
+      <if test="birthday != null" >
+        #{birthday,jdbcType=INTEGER},
+      </if>
+      <if test="province != null" >
+        #{province,jdbcType=TINYINT},
+      </if>
+      <if test="city != null" >
+        #{city,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="work != null" >
+        #{work,jdbcType=TINYINT},
+      </if>
+      <if test="income != null" >
+        #{income,jdbcType=TINYINT},
+      </if>
+      <if test="regip != null" >
+        #{regip,jdbcType=VARCHAR},
+      </if>
+      <if test="jointime != null" >
+        #{jointime,jdbcType=INTEGER},
+      </if>
+      <if test="extinfo != null" >
+        #{extinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="question != null" >
+        #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        #{source,jdbcType=TINYINT},
+      </if>
+      <if test="fromurl != null" >
+        #{fromurl,jdbcType=VARCHAR},
+      </if>
+      <if test="emailOrMobile != null" >
+        #{emailOrMobile,jdbcType=BIT},
+      </if>
+      <if test="edu != null" >
+        #{edu,jdbcType=TINYINT},
+      </if>
+      <if test="industry != null" >
+        #{industry,jdbcType=TINYINT},
+      </if>
+      <if test="selfIntro != null" >
+        #{selfIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="personalUrl != null" >
+        #{personalUrl,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.oauth.sh.sqlmap.mybatis.model.QiyiProfileExample" resultType="java.lang.Integer" >
+    select count(*) from qiyi_profile
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update qiyi_profile
+    <set >
+      <if test="record.suid != null" >
+        suid = #{record.suid,jdbcType=INTEGER},
+      </if>
+      <if test="record.puid != null" >
+        puid = #{record.puid,jdbcType=INTEGER},
+      </if>
+      <if test="record.uname != null" >
+        uname = #{record.uname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.email != null" >
+        email = #{record.email,jdbcType=VARCHAR},
+      </if>
+      <if test="record.acode != null" >
+        acode = #{record.acode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.activated != null" >
+        activated = #{record.activated,jdbcType=TINYINT},
+      </if>
+      <if test="record.passwd != null" >
+        passwd = #{record.passwd,jdbcType=VARCHAR},
+      </if>
+      <if test="record.phone != null" >
+        phone = #{record.phone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.gender != null" >
+        gender = #{record.gender,jdbcType=TINYINT},
+      </if>
+      <if test="record.birthday != null" >
+        birthday = #{record.birthday,jdbcType=INTEGER},
+      </if>
+      <if test="record.province != null" >
+        province = #{record.province,jdbcType=TINYINT},
+      </if>
+      <if test="record.city != null" >
+        city = #{record.city,jdbcType=TINYINT},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.icon != null" >
+        icon = #{record.icon,jdbcType=VARCHAR},
+      </if>
+      <if test="record.work != null" >
+        work = #{record.work,jdbcType=TINYINT},
+      </if>
+      <if test="record.income != null" >
+        income = #{record.income,jdbcType=TINYINT},
+      </if>
+      <if test="record.regip != null" >
+        regip = #{record.regip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.jointime != null" >
+        jointime = #{record.jointime,jdbcType=INTEGER},
+      </if>
+      <if test="record.extinfo != null" >
+        extinfo = #{record.extinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.question != null" >
+        question = #{record.question,jdbcType=VARCHAR},
+      </if>
+      <if test="record.answer != null" >
+        answer = #{record.answer,jdbcType=VARCHAR},
+      </if>
+      <if test="record.source != null" >
+        source = #{record.source,jdbcType=TINYINT},
+      </if>
+      <if test="record.fromurl != null" >
+        fromurl = #{record.fromurl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.emailOrMobile != null" >
+        email_or_mobile = #{record.emailOrMobile,jdbcType=BIT},
+      </if>
+      <if test="record.edu != null" >
+        edu = #{record.edu,jdbcType=TINYINT},
+      </if>
+      <if test="record.industry != null" >
+        industry = #{record.industry,jdbcType=TINYINT},
+      </if>
+      <if test="record.selfIntro != null" >
+        self_intro = #{record.selfIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="record.realName != null" >
+        real_name = #{record.realName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.personalUrl != null" >
+        personal_url = #{record.personalUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update qiyi_profile
+    set suid = #{record.suid,jdbcType=INTEGER},
+      puid = #{record.puid,jdbcType=INTEGER},
+      uname = #{record.uname,jdbcType=VARCHAR},
+      email = #{record.email,jdbcType=VARCHAR},
+      acode = #{record.acode,jdbcType=VARCHAR},
+      activated = #{record.activated,jdbcType=TINYINT},
+      passwd = #{record.passwd,jdbcType=VARCHAR},
+      phone = #{record.phone,jdbcType=VARCHAR},
+      gender = #{record.gender,jdbcType=TINYINT},
+      birthday = #{record.birthday,jdbcType=INTEGER},
+      province = #{record.province,jdbcType=TINYINT},
+      city = #{record.city,jdbcType=TINYINT},
+      status = #{record.status,jdbcType=TINYINT},
+      icon = #{record.icon,jdbcType=VARCHAR},
+      work = #{record.work,jdbcType=TINYINT},
+      income = #{record.income,jdbcType=TINYINT},
+      regip = #{record.regip,jdbcType=VARCHAR},
+      jointime = #{record.jointime,jdbcType=INTEGER},
+      extinfo = #{record.extinfo,jdbcType=VARCHAR},
+      question = #{record.question,jdbcType=VARCHAR},
+      answer = #{record.answer,jdbcType=VARCHAR},
+      source = #{record.source,jdbcType=TINYINT},
+      fromurl = #{record.fromurl,jdbcType=VARCHAR},
+      email_or_mobile = #{record.emailOrMobile,jdbcType=BIT},
+      edu = #{record.edu,jdbcType=TINYINT},
+      industry = #{record.industry,jdbcType=TINYINT},
+      self_intro = #{record.selfIntro,jdbcType=VARCHAR},
+      real_name = #{record.realName,jdbcType=VARCHAR},
+      personal_url = #{record.personalUrl,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.oauth.sh.sqlmap.mybatis.model.QiyiProfile" >
+    update qiyi_profile
+    <set >
+      <if test="puid != null" >
+        puid = #{puid,jdbcType=INTEGER},
+      </if>
+      <if test="uname != null" >
+        uname = #{uname,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="acode != null" >
+        acode = #{acode,jdbcType=VARCHAR},
+      </if>
+      <if test="activated != null" >
+        activated = #{activated,jdbcType=TINYINT},
+      </if>
+      <if test="passwd != null" >
+        passwd = #{passwd,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="gender != null" >
+        gender = #{gender,jdbcType=TINYINT},
+      </if>
+      <if test="birthday != null" >
+        birthday = #{birthday,jdbcType=INTEGER},
+      </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=TINYINT},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=TINYINT},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="work != null" >
+        work = #{work,jdbcType=TINYINT},
+      </if>
+      <if test="income != null" >
+        income = #{income,jdbcType=TINYINT},
+      </if>
+      <if test="regip != null" >
+        regip = #{regip,jdbcType=VARCHAR},
+      </if>
+      <if test="jointime != null" >
+        jointime = #{jointime,jdbcType=INTEGER},
+      </if>
+      <if test="extinfo != null" >
+        extinfo = #{extinfo,jdbcType=VARCHAR},
+      </if>
+      <if test="question != null" >
+        question = #{question,jdbcType=VARCHAR},
+      </if>
+      <if test="answer != null" >
+        answer = #{answer,jdbcType=VARCHAR},
+      </if>
+      <if test="source != null" >
+        source = #{source,jdbcType=TINYINT},
+      </if>
+      <if test="fromurl != null" >
+        fromurl = #{fromurl,jdbcType=VARCHAR},
+      </if>
+      <if test="emailOrMobile != null" >
+        email_or_mobile = #{emailOrMobile,jdbcType=BIT},
+      </if>
+      <if test="edu != null" >
+        edu = #{edu,jdbcType=TINYINT},
+      </if>
+      <if test="industry != null" >
+        industry = #{industry,jdbcType=TINYINT},
+      </if>
+      <if test="selfIntro != null" >
+        self_intro = #{selfIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="realName != null" >
+        real_name = #{realName,jdbcType=VARCHAR},
+      </if>
+      <if test="personalUrl != null" >
+        personal_url = #{personalUrl,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where suid = #{suid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.oauth.sh.sqlmap.mybatis.model.QiyiProfile" >
+    update qiyi_profile
+    set puid = #{puid,jdbcType=INTEGER},
+      uname = #{uname,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      acode = #{acode,jdbcType=VARCHAR},
+      activated = #{activated,jdbcType=TINYINT},
+      passwd = #{passwd,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      gender = #{gender,jdbcType=TINYINT},
+      birthday = #{birthday,jdbcType=INTEGER},
+      province = #{province,jdbcType=TINYINT},
+      city = #{city,jdbcType=TINYINT},
+      status = #{status,jdbcType=TINYINT},
+      icon = #{icon,jdbcType=VARCHAR},
+      work = #{work,jdbcType=TINYINT},
+      income = #{income,jdbcType=TINYINT},
+      regip = #{regip,jdbcType=VARCHAR},
+      jointime = #{jointime,jdbcType=INTEGER},
+      extinfo = #{extinfo,jdbcType=VARCHAR},
+      question = #{question,jdbcType=VARCHAR},
+      answer = #{answer,jdbcType=VARCHAR},
+      source = #{source,jdbcType=TINYINT},
+      fromurl = #{fromurl,jdbcType=VARCHAR},
+      email_or_mobile = #{emailOrMobile,jdbcType=BIT},
+      edu = #{edu,jdbcType=TINYINT},
+      industry = #{industry,jdbcType=TINYINT},
+      self_intro = #{selfIntro,jdbcType=VARCHAR},
+      real_name = #{realName,jdbcType=VARCHAR},
+      personal_url = #{personalUrl,jdbcType=VARCHAR}
+    where suid = #{suid,jdbcType=INTEGER}
+  </update>
+</mapper>

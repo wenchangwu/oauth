@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap     
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"     
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Users">
+
+	<select id="findByEmail" resultClass="com.iqiyi.oauth2.server.pojo.Users">
+		SELECT suid, uname, passwd, email, phone, gender, birthday,
+			province, city, edu, work, personal_url, real_name, self_intro, icon
+		FROM qiyi_profile
+		WHERE email=#emailOrUsername#
+		LIMIT 1
+	</select>
+	
+	<select id="findByUsername" resultClass="com.iqiyi.oauth2.server.pojo.Users">
+		SELECT suid, uname, passwd, email, phone, gender, birthday,
+			province, city, edu, work, personal_url, real_name, self_intro, icon
+		FROM qiyi_profile
+		WHERE uname=#emailOrUsername#
+		LIMIT 1
+	</select>
+	
+	<select id="findRolesByUsersId" resultClass="java.lang.String">
+		SELECT roles.name
+		FROM qiyi_profile users
+		LEFT JOIN users_roles urs ON users.suid=urs.user_id
+		LEFT JOIN roles roles ON urs.role_id=roles.id
+		WHERE users.suid=#suid#
+	</select>
+
+</sqlMap>

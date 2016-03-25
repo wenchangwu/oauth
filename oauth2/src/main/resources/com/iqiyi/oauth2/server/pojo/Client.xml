@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap     
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"     
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Client">
+
+	<select id="findByClientId" resultClass="com.iqiyi.oauth2.server.pojo.Client">
+		SELECT id, client_id, resource_ids, client_secret, client_secret,
+			scope, authorized_grant_types, authorized_grant_types, authorities,
+			access_token_validity, access_token_validity, additional_information
+		FROM oauth_client_details
+		WHERE client_id=#clientId#
+		LIMIT 1
+	</select>
+
+</sqlMap>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>   
+<!DOCTYPE sqlMapConfig         
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"         
+    "http://ibatis.apache.org/dtd/sql-map-config-2.dtd">   
+<sqlMapConfig>
+	<settings cacheModelsEnabled      = "true"  
+                enhancementEnabled      = "true"  
+                lazyLoadingEnabled      = "true"    
+                errorTracingEnabled     = "true"    
+                useStatementNamespaces  = "true"  
+                maxRequests             = "2000"      
+                maxSessions             = "300"  
+                maxTransactions         = "16"/>   
+    <typeAlias alias="sql.date"      	type="java.sql.Date"/>   
+    <typeAlias alias="sql.timestamp"    type="java.sql.Timestamp"/>     
+    <typeAlias alias="map"              type="java.util.Map"/>     
+    <typeAlias alias="list"          	type="java.util.List"/>   
+    <typeAlias alias="hashmap"          type="java.util.HashMap"/>   
+    <typeAlias alias="hashset"          type="java.util.HashSet"/>
+    
+	<!--导入后台系统Ibatis配置-->
+  	<sqlMap resource="com/iqiyi/oauth2/server/pojo/Client.xml"/>
+  	<sqlMap resource="com/iqiyi/oauth2/server/pojo/Users.xml"/>
+  	
+</sqlMapConfig>
